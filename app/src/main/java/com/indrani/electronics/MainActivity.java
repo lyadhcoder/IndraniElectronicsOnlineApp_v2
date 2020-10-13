@@ -1,8 +1,10 @@
 package com.indrani.electronics;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -16,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     String webUrl = "https://indranielectronics.com/";
     private ProgressBar progressBar;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +67,31 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        //pull to refresh
+        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe);
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                        web.reload();
+                    }
+                },1500);
+            }
+        });
+
+        swipeRefreshLayout.setColorSchemeColors(
+                getResources().getColor(android.R.color.holo_blue_dark),
+                getResources().getColor(android.R.color.holo_orange_dark),
+                getResources().getColor(android.R.color.holo_green_dark),
+                getResources().getColor(android.R.color.holo_red_dark)
+
+
+        );
 
 
     }
