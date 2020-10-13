@@ -3,6 +3,7 @@ package com.indrani.electronics;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressBar;
 
     private SwipeRefreshLayout swipeRefreshLayout;
+    private boolean doubleBackToExitPressedOnce;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,15 +96,39 @@ public class MainActivity extends AppCompatActivity {
 
         );
 
-
+        
     }
+    
+    
     @Override
-    public void onBackPressed(){
-        if(web.canGoBack()){
+    public void onBackPressed() {
+        if (web.canGoBack()) {
             web.goBack();
-        }
-        else {
-            super.onBackPressed();
+        } else {
+
+
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+
+            builder.setMessage("Are you sure you want to Exit?")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                            finish();
+
+
+                        }
+                    })
+
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                        }
+                    });
+            android.app.AlertDialog alertDialog = builder.create();
+            alertDialog.show();
         }
     }
 }
