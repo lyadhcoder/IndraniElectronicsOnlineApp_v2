@@ -3,16 +3,24 @@ package com.indrani.electronics;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressBar;
 
     private SwipeRefreshLayout swipeRefreshLayout;
-    private boolean doubleBackToExitPressedOnce;
+    RelativeLayout relativeLayout;
+    Button NointernetBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +43,25 @@ public class MainActivity extends AppCompatActivity {
         WebSettings mywebsettings = web.getSettings();
         mywebsettings.setJavaScriptEnabled(true);
 
+        web.setWebViewClient(new WebViewClient(){
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                internetcheck();
+                super.onReceivedError(view, request, error);
+            }
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.startsWith("http:") || url.startsWith("https:")) {
+                    return false;
+                }
 
-        web.setWebViewClient(new WebViewClient());
+                // Otherwise allow the OS to handle things like tel, mailto, etc.
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intent);
+                return true;
+            }
+        });
+
         //WebView
         web.getSettings().setLoadsImagesAutomatically(true);
         web.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
@@ -66,8 +92,6 @@ public class MainActivity extends AppCompatActivity {
                     progressBar.setVisibility(ProgressBar.GONE);
                 }
                 progressBar.setProgress(progress);
-
-
             }
         });
         //pull to refresh
@@ -96,10 +120,18 @@ public class MainActivity extends AppCompatActivity {
 
         );
 
-        
+        //internet connection check
+        NointernetBtn = (Button) findViewById(R.id.btnRetry);
+        relativeLayout = (RelativeLayout) findViewById(R.id.nonet);
+        internetcheck();
+        NointernetBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                internetcheck();
+            }
+        });
     }
-    
-    
+
     @Override
     public void onBackPressed() {
         if (web.canGoBack()) {
@@ -116,8 +148,6 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialogInterface, int i) {
 
                             finish();
-
-
                         }
                     })
 
@@ -131,4 +161,34 @@ public class MainActivity extends AppCompatActivity {
             alertDialog.show();
         }
     }
+    public void internetcheck(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mobiledata = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        NetworkInfo wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+        if(mobiledata.isConnected()){
+            web.setVisibility(View.VISIBLE);
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
+            relativeLayout.setVisibility(View.GONE);
+            web.reload();
+        }
+
+        else if(wifi.isConnected()){
+
+            web.setVisibility(View.VISIBLE);
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
+            relativeLayout.setVisibility(View.GONE);
+            web.reload();
+        }
+
+        else{
+
+            web.setVisibility(View.GONE);
+            swipeRefreshLayout.setVisibility(View.GONE);
+            relativeLayout.setVisibility(View.VISIBLE);
+
+        }
+
+    }
+
 }

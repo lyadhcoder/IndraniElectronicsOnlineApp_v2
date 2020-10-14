@@ -17,10 +17,37 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/swipe">
+        android:id="@+id/swipe"
+        android:visibility="gone">
     <WebView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/myweb"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/nonet">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/nonetimg"
+            android:src="@drawable/nonet"
+
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnRetry"
+            android:layout_centerHorizontal="true"
+            android:background="@color/colorAccent"
+            android:text="retry"
+            android:textSize="15dp"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="430dp"
+            />
+
+
+    </RelativeLayout>
 </LinearLayout>
