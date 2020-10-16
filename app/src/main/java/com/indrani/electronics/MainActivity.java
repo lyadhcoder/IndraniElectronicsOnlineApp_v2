@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     RelativeLayout relativeLayout;
-    Button NointernetBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +64,8 @@ public class MainActivity extends AppCompatActivity {
         //WebView
         web.getSettings().setLoadsImagesAutomatically(true);
         web.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
-        web.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        web.getSettings().setAppCacheEnabled(true);
+        //web.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        //web.getSettings().setAppCacheEnabled(true);
         web.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         mywebsettings.setDomStorageEnabled(true);
         mywebsettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
@@ -76,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
         mywebsettings.setEnableSmoothTransition(true);
 
         //ProgressBar
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         web.setWebChromeClient(new WebChromeClient() {
 
@@ -121,15 +119,8 @@ public class MainActivity extends AppCompatActivity {
         );
 
         //internet connection check
-        NointernetBtn = (Button) findViewById(R.id.btnRetry);
         relativeLayout = (RelativeLayout) findViewById(R.id.nonet);
         internetcheck();
-        NointernetBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                internetcheck();
-            }
-        });
     }
 
     @Override
